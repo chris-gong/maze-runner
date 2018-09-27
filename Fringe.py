@@ -8,11 +8,11 @@ class StackFringe:
 			return None
 		else:
 			return self.stack.pop()
-	def push(self,coord):
-		if coord in self.stack:
+	def push(self,loc):
+		if loc in self.stack:
 			return
 		else:
-			return self.stack.append(coord)
+			return self.stack.append(loc)
 	
 class QueueFringe:
 	def __init__(self):
