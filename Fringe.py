@@ -1,0 +1,33 @@
+class StackFringe:
+	def __init__(self):
+		self.stack=[]
+	def isEmpty(self):
+		return len(self.stack) == 0
+	def pop(self):
+		if(self.isEmpty):
+			return None
+		else:
+			return self.stack.pop()
+	def push(self,coord):
+		if coord in self.stack:
+			return
+		else:
+			return self.stack.append(coord)
+	
+class QueueFringe:
+	def __init__(self):
+		self.stack=[]
+
+	def isEmpty(self):
+		return len(self.stack) == 0
+
+	def enqueue(self,val):
+		self.queue.insert(0,val)
+
+    def dequeue(self):
+        if self.is_empty():
+            return None
+        else:
+            return self.queue.pop()
+	
+	
