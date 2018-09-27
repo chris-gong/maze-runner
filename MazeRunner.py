@@ -16,22 +16,24 @@ class MazeRunner():
 			cur_loc = fringe.pop()
 			if cur_loc == goal:
 				# Found solution
-				pass
+				return True
 			for move in move_vectors:
 				new_loc = tuple(sum(x) for x in zip(cur_loc,move))
 				if isInMaze(new_loc) and new_loc in closed:
 					fringe.push(new_loc)
 			closed.append(cur_loc)
+		return False
 
 
-	def isInMaze(self,loc)
+	def isInMaze(self,loc):
 		x = loc[0]
 		y = loc[1]
 		if x < 0 or x >= self.maze.dim:
-			return false
-		else if y < 0 or y >= self.maze.dim
-			return false
+			return False
+		elif y < 0 or y >= self.maze.dim:
+			return False
 		else:
-			return true
+			return True
+
 
 
