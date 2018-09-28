@@ -16,18 +16,16 @@ class StackFringe:
 	
 class QueueFringe:
 	def __init__(self):
-		self.stack=[]
+		self.queue=[]
 
 	def isEmpty(self):
-		return len(self.stack) == 0
+		return len(self.queue) == 0
 
 	def enqueue(self,val):
 		self.queue.insert(0,val)
 
-    def dequeue(self):
-        if self.is_empty():
-            return None
-        else:
-            return self.queue.pop()
-	
-	
+	def dequeue(self):
+		if self.IsEmpty():
+			return None
+		else:
+			return self.queue.pop()
