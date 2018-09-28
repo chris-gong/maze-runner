@@ -1,8 +1,9 @@
-import MazeGenerator
-import Fringe
+from MazeGenerator import *
+from Fringe import *
 
 class MazeRunner():
-	def __init__(self):
+	def __init__(self,maze):
+		self.maze = maze
 		pass
 
 	def DFS(self):
@@ -34,6 +35,14 @@ class MazeRunner():
 			return False
 		else:
 			return True
+
+if __name__ == '__main__':
+	maze_generator = MazeGenerator(25)
+	maze = maze_generator.GenerateMaze(.25)
+	# maze.RenderMaze()
+	runner = MazeRunner(maze)
+	print(runner.DFS())
+
 
 
 
