@@ -4,10 +4,7 @@ class StackFringe:
     def is_empty(self):
         return len(self.stack) == 0
     def pop(self):
-        if(self.is_empty):
-            return None
-        else:
-            return self.stack.pop()
+        return self.stack.pop()
     def push(self,loc):
         if loc in self.stack:
             return
@@ -21,11 +18,13 @@ class QueueFringe:
     def is_empty(self):
         return len(self.queue) == 0
 
-    def enqueue(self,val):
-        self.queue.insert(0,val)
+    def enqueue(self,loc):
+        return self.queue.insert(0,loc)
 
     def dequeue(self):
-        if self.IsEmpty():
+        if self.is_empty():
             return None
         else:
             return self.queue.pop()
+
+class HeapFringe:
