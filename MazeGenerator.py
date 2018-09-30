@@ -6,7 +6,7 @@ class MazeGenerator():
     def __init__(self, dim):
         self.dim = dim
 
-    def GenerateMaze(self,prob):
+    def generate_maze(self,prob):
         new_maze = Maze(self.dim,prob)
         return new_maze
 
@@ -18,7 +18,7 @@ class Maze():
         self.grid[dim-1][dim-1] = False
         self.dim = dim
 
-    def RenderMaze(self):
+    def render_maze(self):
         plt.imshow(self.grid, cmap='Greys',  interpolation='nearest')
         plt.show()
 
@@ -27,4 +27,4 @@ if __name__ == '__main__':
     dimension = int(input("What is the demnsion of the maze?\n"))
     percent = float(input("What is the percentage a tile is blocked?\n"))
     mymaze = Maze(dimension,percent)
-    mymaze.RenderMaze()
+    mymaze.render_maze()

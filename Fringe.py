@@ -1,10 +1,10 @@
 class StackFringe:
     def __init__(self):
         self.stack=[]
-    def isEmpty(self):
+    def is_empty(self):
         return len(self.stack) == 0
     def pop(self):
-        if(self.isEmpty):
+        if(self.is_empty):
             return None
         else:
             return self.stack.pop()
@@ -18,7 +18,7 @@ class QueueFringe:
     def __init__(self):
         self.queue=[]
 
-    def isEmpty(self):
+    def is_empty(self):
         return len(self.queue) == 0
 
     def enqueue(self,val):
