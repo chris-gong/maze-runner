@@ -26,12 +26,21 @@ class MazeRunner():
         else:
             return True
 
+    def get_solution_from_paths(self, path, goal):
+        solution = []
+        cur_loc = goal
+        while(cur_loc != (0, 0)):
+            solution.append(cur_loc)
+            cur_loc = path[cur_loc]
+        solution.append((0, 0))
+        solution.reverse()
+        return solution
+
     def dfs(self):
         size = self.maze.dim
         goal = (size-1, size-1)
         path = {}
         closed = [[False for x in range(size)] for y in range(size)]
-        solution = []
         fringe = StackFringe()
         fringe.push((0, 0))
         closed[0][0] = True
@@ -39,7 +48,6 @@ class MazeRunner():
         path_found = False
         while not fringe.is_empty():
             cur_loc = fringe.pop()
-            print(cur_loc)
             if cur_loc == goal:
                 path_found = True
                 break
@@ -56,21 +64,13 @@ class MazeRunner():
             # closed.append(cur_loc)
         if not path_found:
             return None
-        cur_loc = goal
-        print("SOLUTION:")
-        while(cur_loc != (0, 0)):
-            solution.append(cur_loc)
-            cur_loc = path[cur_loc]
-        solution.append((0, 0))
-        solution.reverse()
-        return solution
+        return self.get_solution_from_paths(path, goal)
 
     def bfs(self):
         size = self.maze.dim
         goal = (size-1, size-1)
         path = {}
         closed = [[False for x in range(size)] for y in range(size)]
-        solution = []
         fringe = QueueFringe()
         fringe.enqueue((0, 0))
         closed[0][0] = True
@@ -78,7 +78,6 @@ class MazeRunner():
         path_found = False
         while not fringe.is_empty():
             cur_loc = fringe.dequeue()
-            print(cur_loc)
             if cur_loc == goal:
                 path_found = True
                 break
@@ -95,24 +94,14 @@ class MazeRunner():
             # closed.append(cur_loc)
         if not path_found:
             return None
-        cur_loc = goal
-        print("SOLUTION:")
-        while(cur_loc != (0, 0)):
-            solution.append(cur_loc)
-            cur_loc = path[cur_loc]
-        solution.append((0, 0))
-        solution.reverse()
-        return solution
+        return self.get_solution_from_paths(path, goal)
 
     def a_star(self, heuristic):
         size = self.maze.dim
         goal = (size-1, size-1)
         path = {}
         closed = [[False for x in range(size)] for y in range(size)]
-        solution = []
         fringe = HeapFringe()
-        print("HEURISTIC (0, 0)")
-        print(heuristic((0, 0)))
         initial_node = MazeNode((0, 0), 0, heuristic((0, 0)))
         fringe.add_node(initial_node)
         closed[0][0] = True
@@ -122,7 +111,6 @@ class MazeRunner():
             cur_node = fringe.get_min_node()
             if cur_node is None:
                 break
-            print(cur_node.loc)
             if cur_node.loc == goal:
                 path_found = True
                 break
@@ -147,14 +135,7 @@ class MazeRunner():
             closed[cur_node.loc[0]][cur_node.loc[1]] = True
         if not path_found:
             return None
-        cur_loc = goal
-        print("SOLUTION:")
-        while(cur_loc != (0, 0)):
-            solution.append(cur_loc)
-            cur_loc = path[cur_loc]
-        solution.append((0, 0))
-        solution.reverse()
-        return solution
+        return self.get_solution_from_paths(path, goal)
 
 
 def render_solution(self, solution):
