@@ -14,7 +14,7 @@ ax.imshow(data, cmap=cmap, norm=norm)
 
 # draw gridlines
 ax.grid(which='major', axis='both', linestyle='-', color='k', linewidth=2)
-ax.set_xticks(np.arange(-.5, 10, 1));
-ax.set_yticks(np.arange(-.5, 10, 1));
+ax.set_xticks(np.arange(-.5, 10, 1))
+ax.set_yticks(np.arange(-.5, 10, 1))
 
 plt.show()
