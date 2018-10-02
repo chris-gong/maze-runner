@@ -1,4 +1,4 @@
-from MazeGenerator import MazeGenerator
+from Maze import Maze
 from Fringe import StackFringe, QueueFringe, HeapFringe
 from MazeNode import MazeNode
 import numpy as np
@@ -6,9 +6,13 @@ import matplotlib.pyplot as plt
 
 
 class MazeRunner():
-    def __init__(self, maze):
-        self.maze = maze
-        pass
+    def __init__(self, dim,prob):
+        self.dim = dim
+        self.prob = prob
+        self.generate_maze()
+
+    def generate_maze(self): 
+        self.maze = Maze(self.dim, self.prob)
 
     def get_euclid_dist(self, loc):
         return self.maze.euclid_dist(loc)
@@ -138,7 +142,7 @@ class MazeRunner():
         return self.get_solution_from_paths(path, goal)
 
 
-def render_solution(self, solution):
+    def render_solution(self, solution):
         solution_map = np.zeros((self.maze.dim, self.maze.dim), dtype=bool)
         for loc in solution:
             solution_map[loc[0]][loc[1]] = True
@@ -147,15 +151,14 @@ def render_solution(self, solution):
 
 
 if __name__ == '__main__':
-    maze_generator = MazeGenerator(25)
-    maze = maze_generator.generate_maze(.35)
-    runner = MazeRunner(maze)
+    runner = MazeRunner(30,.35)
     solutions = []
     solutions.append(runner.bfs())
     solutions.append(runner.dfs())
     solutions.append(runner.a_star(runner.get_euclid_dist))
     solutions.append(runner.a_star(runner.get_manhatten_dist))
-    maze.render_maze()
+    runner.maze.render_maze()
     for solution in solutions:
         if solution is not None:
             runner.render_solution(solution)
+    
