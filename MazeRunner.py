@@ -148,17 +148,25 @@ class MazeRunner():
             solution_map[loc[0]][loc[1]] = True
         plt.imshow(solution_map, cmap='Greys',  interpolation='nearest')
         plt.show()
+        
+    def run_tests(self,n_trials, search_function, *args):
+        successes = 0
+        total_length = 0
+        for trial in range(n_trials):
+            self.generate_maze()
+            solution = search_function(*args)
+            if solution is not None:
+                successes += 1
+                total_length += len(solution)
+        avg_length = 0
+        if successes > 0:
+            avg_length = total_length / successes
+        return successes, avg_length
+
 
 
 if __name__ == '__main__':
     runner = MazeRunner(30,.35)
-    solutions = []
-    solutions.append(runner.bfs())
-    solutions.append(runner.dfs())
-    solutions.append(runner.a_star(runner.get_euclid_dist))
-    solutions.append(runner.a_star(runner.get_manhatten_dist))
-    runner.maze.render_maze()
-    for solution in solutions:
-        if solution is not None:
-            runner.render_solution(solution)
+    successes, avg_length = runner.run_tests(100,runner.a_star,runner.get_euclid_dist)
+    print (successes)
     
