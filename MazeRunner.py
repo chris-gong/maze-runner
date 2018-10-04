@@ -141,7 +141,6 @@ class MazeRunner():
             return None
         return self.get_solution_from_paths(path, goal)
 
-
     def render_solution(self, solution):
         solution_map = np.zeros((self.maze.dim, self.maze.dim), dtype=bool)
         for loc in solution:
@@ -149,7 +148,7 @@ class MazeRunner():
         plt.imshow(solution_map, cmap='Greys',  interpolation='nearest')
         plt.show()
         
-    def run_tests(self,n_trials, search_function, *args):
+    def run_tests(self, n_trials, search_function, *args):
         successes = 0
         total_length = 0
         for trial in range(n_trials):
