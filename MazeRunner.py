@@ -137,8 +137,7 @@ class MazeRunner():
             return None
         return self.get_solution_from_paths(path, goal)
 
-
-def render_solution(self, solution):
+    def render_solution(self, solution):
         solution_map = np.zeros((self.maze.dim, self.maze.dim), dtype=bool)
         for loc in solution:
             solution_map[loc[0]][loc[1]] = True
@@ -147,14 +146,14 @@ def render_solution(self, solution):
 
 
 if __name__ == '__main__':
-    maze_generator = MazeGenerator(25)
-    maze = maze_generator.generate_maze(.35)
+    maze_generator = MazeGenerator(400)
+    maze = maze_generator.generate_maze(.2)
     runner = MazeRunner(maze)
     solutions = []
-    solutions.append(runner.bfs())
-    solutions.append(runner.dfs())
+    # solutions.append(runner.bfs())
+    # solutions.append(runner.dfs())
     solutions.append(runner.a_star(runner.get_euclid_dist))
-    solutions.append(runner.a_star(runner.get_manhatten_dist))
+    # solutions.append(runner.a_star(runner.get_manhatten_dist))
     maze.render_maze()
     for solution in solutions:
         if solution is not None:
