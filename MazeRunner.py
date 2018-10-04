@@ -1,4 +1,4 @@
-from MazeGenerator import MazeGenerator
+from Maze import Maze
 from Fringe import StackFringe, QueueFringe, HeapFringe
 from MazeNode import MazeNode
 import numpy as np
@@ -6,9 +6,13 @@ import matplotlib.pyplot as plt
 
 
 class MazeRunner():
-    def __init__(self, maze):
-        self.maze = maze
-        pass
+    def __init__(self, dim,prob):
+        self.dim = dim
+        self.prob = prob
+        self.generate_maze()
+
+    def generate_maze(self): 
+        self.maze = Maze(self.dim, self.prob)
 
     def get_euclid_dist(self, loc):
         return self.maze.euclid_dist(loc)
@@ -143,18 +147,25 @@ class MazeRunner():
             solution_map[loc[0]][loc[1]] = True
         plt.imshow(solution_map, cmap='Greys',  interpolation='nearest')
         plt.show()
+        
+    def run_tests(self, n_trials, search_function, *args):
+        successes = 0
+        total_length = 0
+        for trial in range(n_trials):
+            self.generate_maze()
+            solution = search_function(*args)
+            if solution is not None:
+                successes += 1
+                total_length += len(solution)
+        avg_length = 0
+        if successes > 0:
+            avg_length = total_length / successes
+        return successes, avg_length
+
 
 
 if __name__ == '__main__':
-    maze_generator = MazeGenerator(400)
-    maze = maze_generator.generate_maze(.2)
-    runner = MazeRunner(maze)
-    solutions = []
-    # solutions.append(runner.bfs())
-    # solutions.append(runner.dfs())
-    solutions.append(runner.a_star(runner.get_euclid_dist))
-    # solutions.append(runner.a_star(runner.get_manhatten_dist))
-    maze.render_maze()
-    for solution in solutions:
-        if solution is not None:
-            runner.render_solution(solution)
+    runner = MazeRunner(30,.35)
+    successes, avg_length = runner.run_tests(100,runner.a_star,runner.get_euclid_dist)
+    print (successes)
+    
