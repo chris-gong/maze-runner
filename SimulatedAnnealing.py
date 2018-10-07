@@ -22,8 +22,13 @@ class SimulatedAnnealing():
         self.current_state = (self.original_maze,nodes_expanded)
         return True
         
-    def temperature_schedule(self):
-        pass
+    def temperature(self, obj_change, prob, k):
+        prob_of_acceptance = 1 / (1 + exp((obj_change/self.temp)))
+        if prob_of_acceptance > prob:
+            self.temp = self.temp * pow(0.95, k)
+            return True
+        else:
+            return False
 
     
     def generate_neighbors(self,maze):
