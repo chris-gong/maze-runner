@@ -1,6 +1,7 @@
 from random import randint
 from copy import deepcopy
 from MazeRunner import MazeRunner
+from math import exp
 
 class SimulatedAnnealing():
     
@@ -24,8 +25,13 @@ class SimulatedAnnealing():
         self.current_state = (runner.maze,nodes_expanded)
         return True
         
-    def temperature_schedule(self):
-        pass
+    def temperature(self, obj_change, prob, k):
+        prob_of_acceptance = 1 / (1 + exp((obj_change/self.temp)))
+        if prob_of_acceptance > prob:
+            self.temp = self.temp * pow(0.95, k)
+            return True
+        else:
+            return False
 
     def generate_neighbors(self):
         maze = self.current_state[0]
@@ -51,7 +57,7 @@ class SimulatedAnnealing():
             return None
         else:
             return neighbors
-        
+
     def generate_harder_maze(self):
         while(True):
             neighbors = self.generate_neighbors()
@@ -60,5 +66,4 @@ class SimulatedAnnealing():
 if __name__ == '__main__':
     runner = MazeRunner(20,.2)
     simulated_annealing = SimulatedAnnealing(runner,runner.a_star,runner.get_euclid_dist)
-    
-                
+
