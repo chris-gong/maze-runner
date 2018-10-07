@@ -150,7 +150,7 @@ class MazeRunner():
                             fringe.update_node(new_node)
             closed[cur_node.loc[0]][cur_node.loc[1]] = True
         if not path_found:
-            return None, nodes_expanded.max_fringe_size
+            return None, nodes_expanded,max_fringe_size
         return self.get_solution_from_paths(path, goal),nodes_expanded,max_fringe_size
 
     def render_solution(self, solution):
