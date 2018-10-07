@@ -7,8 +7,10 @@ class SimulatedAnnealing():
     
     def __init__(self,runner,search_function,*args):
         self.runner = runner
+        self.search_function = search_function
+        self.args = *args
         if not self.start_maze(search_function,*args):
-            pass # Error no solvable maze generated in 100 trials with func
+            return None # Error no solvable maze generated in 100 trials with func
         self.original_maze = self.runner.maze
         self.generate_harder_maze()
         
@@ -61,9 +63,22 @@ class SimulatedAnnealing():
     def generate_harder_maze(self):
         while(True):
             neighbors = self.generate_neighbors()
+            best_state = None
+            for neighbor in neighbors:
+                solution,nodes_expanded = self.search_function(self.args)
+                if(best_state is None and nodes_expanded < self.current_state[1]):
+                    best_state = (neighbor,nodes_expanded)
+                else if best_state is not None and nodes_expanded < best_state[1]:
+                    best_state = (neighbor,nodes_expanded)
+            if best_state is None:
+                temp_check = self.temperature()#TODO 
+                
+                
             return
-
 if __name__ == '__main__':
-    runner = MazeRunner(20,.2)
+    runner = MazeRunner(7,.3)
     simulated_annealing = SimulatedAnnealing(runner,runner.a_star,runner.get_euclid_dist)
-
+    x = simulated_annealing.generate_neighbors()
+    pass
+    
+    
