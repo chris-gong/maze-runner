@@ -10,19 +10,24 @@ class SimulatedAnnealing():
         self.search_function = search_function
         if not self.start_maze(search_function,*args):
             return None # Error no solvable maze generated in 100 trials with func
-        self.original_maze = self.runner.maze
-        self.generate_harder_maze(*args)
-        
+        #self.generate_harder_maze(*args)
+        #self.current_state[0].render_maze()        
     def start_maze(self,search_function,*args):
         solution = None
         trials = 0
         nodes_expanded = 0
-        while(solution is not None):
+        self.runner.maze.render_maze()
+        while(True):
             solution,nodes_expanded = search_function(*args)
+            if(solution is not None):
+                self.runner.maze.render_maze()
+                self.runner.render_solution(solution)
+                return True
             self.runner.generate_maze()
             trials += 1
-            if trials is 100 and solution is None:
+            if trials is 1000 and solution is None:
                     return False
+        print(solution)
         self.current_state = (runner.maze,nodes_expanded)
         return True
         
@@ -38,49 +43,59 @@ class SimulatedAnnealing():
         maze = self.current_state[0]
         neighbors = []
         dim = self.runner.dim
-        row_index = randint(0,dim-1)
-        for x1 in range(0,dim):
-            if maze.grid[row_index][x1]:
-                for x2 in range(0,dim):
-                    if maze.grid[row_index][x2]:
-                        continue
-                    else:
-                        if((row_index == 0 and x2 == 0) or
-                            (row_index == dim-1 and x2 == dim-1)):
+        while(True):
+            row_index = randint(0,dim-1)
+            for x1 in range(0,dim):
+                if maze.grid[row_index][x1]:
+                    for x2 in range(0,dim):
+                        if maze.grid[row_index][x2]:
                             continue
-                        new_maze = deepcopy(maze)
-                        new_maze.grid[row_index][x2] = True
-                        new_maze.grid[row_index][x1] = False
-                        neighbors.append(new_maze)
-            else:
-                pass
-        if neighbors is []:
-            return None
-        else:
-            return neighbors
+                        else:
+                            if((row_index == 0 and x2 == 0) or
+                                (row_index == dim-1 and x2 == dim-1)):
+                                continue
+                            new_maze = deepcopy(maze)
+                            new_maze.grid[row_index][x2] = True
+                            new_maze.grid[row_index][x1] = False
+                            neighbors.append(new_maze)
+                else:
+                    pass
+            if neighbors is not []:
+                return neighbors
 
     def generate_harder_maze(self,*args):
+        num_restarts = 15
         while(True):
             neighbors = self.generate_neighbors()
             best_neighbor = None
             for neighbor in neighbors:
                 solution,nodes_expanded = self.search_function(*args)
+                if solution is None:
+                    continue
                 if(best_neighbor is None or nodes_expanded < best_neighbor[1]):
                     best_neighbor = (neighbor,nodes_expanded)
             
-            if best_neighbor is None:
-                
+            if best_neighbor is None: #all neighbors are unsolvable
+                if num_restarts is not 0:
+                    continue
+                else:
+                    return
+                num_restarts -= 1
             else:
                 if best_neighbor[1] < self.current_state[1]:
                     self.current_state = best_neighbor
                 else:
                     temp_check = self.temperature(self.current_state[1] - best_neighbor[1], 0.5, 2)
+                    if temp_check:
+                        self.current_state = best_neighbor
+                    else:
+                        return
                 
             return
 if __name__ == '__main__':
-    runner = MazeRunner(30,.3)
+    runner = MazeRunner(30,.4)
     simulated_annealing = SimulatedAnnealing(runner,runner.a_star,runner.get_euclid_dist)
-    x = simulated_annealing.generate_neighbors()
+    #simulated_annealing = SimulatedAnnealing(runner,runner.bfs)
     pass
     
     
