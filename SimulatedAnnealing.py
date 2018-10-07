@@ -1,29 +1,35 @@
-import MazeRunner
-import random
+from random import randint
 from copy import deepcopy
 
 class SimulatedAnnealing():
     
-    def __init__(self,dim,prob,search_function,*args):
-        runner = MazeRunner(dim,prob)
+    def __init__(self,runner,search_function,*args):
+        self.runner = runner
+        if not self.start_maze():
+            pass # Error no solvable maze generated in 100 trials with func
         self.original_maze = self.maze_runner.maze
+        self.generate_harder_maze()
+        
+    def start_maze(self,search_function,*args):
         solution = None
+        trials = 0
         while(solution is not None):
-            solution,nodes_expanded = runner.search_function(*args)
-            runner.generate_maze()
-        
-            
-            
-            
-        
+            solution,nodes_expanded = search_function(*args)
+            self.runner.generate_maze()
+            trials += 1
+            if trials is 100 and solution is None:
+                    return False
+        self.current_state = (self.original_maze,nodes_expanded)
+        return True
         
     def TemperatureFunction(self):
         pass
+
     
     def GenerateNeighbors(self,maze):
         neighbors = []
         dim = self.runner.dim
-        row_index = random.randint(0,dim-1)
+        row_index = randint(0,dim-1)
         for x1 in range(0,dim):
             if maze.grid[row_index][x1]:
                 for x2 in range(0,dim):
