@@ -74,7 +74,7 @@ class SimulatedAnnealing():
                 if best_neighbor[1] < self.current_state[1]:
                     self.current_state = best_neighbor
                 else:
-                    temp_check = self.temperature()
+                    temp_check = self.temperature(self.current_state[1] - best_neighbor[1], 0.5, 2)
                 
             return
 if __name__ == '__main__':
