@@ -51,7 +51,9 @@ class MazeRunner():
         move_vectors = [(0, -1), (-1, 0), (0, 1), (1, 0)]
         path_found = False
         nodes_expanded = 0
+        max_fringe_size = 0
         while not fringe.is_empty():
+            max_fringe_size = max(max_fringe_size,len(fringe.stack))
             cur_loc = fringe.pop()
             nodes_expanded += 1
             if cur_loc == goal:
@@ -69,8 +71,8 @@ class MazeRunner():
                     closed[new_loc[0]][new_loc[1]] = True
             # closed.append(cur_loc)
         if not path_found:
-            return None, nodes_expanded
-        return self.get_solution_from_paths(path, goal),nodes_expanded
+            return None, nodes_expanded, max_fringe_size
+        return self.get_solution_from_paths(path, goal),nodes_expanded, max_fringe_size
 
     def bfs(self):
         size = self.maze.dim
@@ -83,7 +85,9 @@ class MazeRunner():
         move_vectors = [(0, -1), (-1, 0), (0, 1), (1, 0)]
         path_found = False
         nodes_expanded = 0
+        max_fringe_size = 0
         while not fringe.is_empty():
+            max_fringe_size = max(max_fringe_size,len(fringe.queue))
             cur_loc = fringe.dequeue()
             nodes_expanded += 1
             if cur_loc == goal:
@@ -101,8 +105,8 @@ class MazeRunner():
                     closed[new_loc[0]][new_loc[1]] = True
             # closed.append(cur_loc)
         if not path_found:
-            return None, nodes_expanded
-        return self.get_solution_from_paths(path, goal), nodes_expanded
+            return None, nodes_expanded,max_fringe_size
+        return self.get_solution_from_paths(path, goal), nodes_expanded,max_fringe_size
 
     def a_star(self, heuristic):
         size = self.maze.dim
@@ -116,7 +120,9 @@ class MazeRunner():
         move_vectors = [(0, -1), (-1, 0), (0, 1), (1, 0)]
         path_found = False
         nodes_expanded = 0
+        max_fringe_size = 0
         while not fringe.is_empty():
+            max_fringe_size = max(max_fringe_size,len(fringe.heap))
             cur_node = fringe.get_min_node()
             nodes_expanded += 1
             if cur_node is None:
@@ -144,8 +150,8 @@ class MazeRunner():
                             fringe.update_node(new_node)
             closed[cur_node.loc[0]][cur_node.loc[1]] = True
         if not path_found:
-            return None, nodes_expanded
-        return self.get_solution_from_paths(path, goal),nodes_expanded
+            return None, nodes_expanded.max_fringe_size
+        return self.get_solution_from_paths(path, goal),nodes_expanded,max_fringe_size
 
     def render_solution(self, solution):
         solution_map = np.zeros((self.maze.dim, self.maze.dim), dtype=bool)
@@ -160,7 +166,7 @@ class MazeRunner():
         total_length = 0
         for trial in range(n_trials):
             self.generate_maze()
-            solution,nodes_expanded = search_function(*args)
+            solution,nodes_expanded, max_fringe_size = search_function(*args)
             if solution is not None:
                 successes += 1
                 total_length += len(solution)
@@ -173,7 +179,7 @@ class MazeRunner():
 
 
 if __name__ == '__main__':
-    runner = MazeRunner(50,.3)
+    runner = MazeRunner(25,.3)
     successes, avg_length = runner.run_tests(100,runner.a_star,runner.get_euclid_dist)
     successes, avg_length = runner.run_tests(100,runner.a_star,runner.get_manhatten_dist)
     print (successes)

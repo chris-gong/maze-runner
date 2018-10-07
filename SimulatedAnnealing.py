@@ -11,7 +11,7 @@ class SimulatedAnnealing():
         self.search_function = search_function
         if not self.start_maze(search_function,*args):
             return None # Error no solvable maze generated in 100 trials with func
-        original_maze = self.current_state[0]
+        self.original_maze = self.current_state[0]
         self.generate_harder_maze(*args)
         self.runner.maze = self.current_state[0]
         print("Intiial Maze")
@@ -19,7 +19,7 @@ class SimulatedAnnealing():
         original_maze.render_maze()
         print("Final Maze")
         self.current_state[0].render_maze()
-        solution,nodes_expanded = search_function(*args)
+        solution,nodes_expanded,max_fringe_size = search_function(*args)
         print ("NODES EXPANDED FINAL = " + str(nodes_expanded))
         
         
@@ -32,9 +32,10 @@ class SimulatedAnnealing():
         trials = 0
         nodes_expanded = 0
         while(True):
-            solution,nodes_expanded = search_function(*args)
+            solution,nodes_expanded,max_fringe_size = search_function(*args)
             if(solution is not None):
                 self.original_nodes_expanded = nodes_expanded
+                self.original_max_fringe_size = max_fringe_size
                 self.set_current_state((runner.maze,nodes_expanded))
                 return True
             self.runner.generate_maze()
@@ -77,12 +78,11 @@ class SimulatedAnnealing():
     def generate_harder_maze(self,*args):
         num_restarts = 15
         while(True):
-            original_maze = self.current_state[0]
             neighbors = self.generate_neighbors()
             best_neighbor = None
             for neighbor in neighbors:
                 self.runner.maze = neighbor
-                solution,nodes_expanded = self.search_function(*args)
+                solution,nodes_expanded,max_fringe_size = self.search_function(*args)
                 if solution is None:
                     continue
                 if(best_neighbor is None or nodes_expanded > best_neighbor[1]):
@@ -98,7 +98,7 @@ class SimulatedAnnealing():
                 if best_neighbor[1] > self.current_state[1]:
                     self.set_current_state(best_neighbor)
                 else:
-                    temp_check = self.temperature(self.current_state[1] - best_neighbor[1], 0.48, 3)
+                    temp_check = self.temperature(self.current_state[1] - best_neighbor[1], 0.48, 2)
                     print("temp_check="+str(temp_check))
                     print(self.current_state[1] - best_neighbor[1])
                     if temp_check:
@@ -109,8 +109,8 @@ class SimulatedAnnealing():
         return
 if __name__ == '__main__':
     runner = MazeRunner(25,.3)
-    simulated_annealing = SimulatedAnnealing(runner,runner.a_star,runner.get_euclid_dist)
-    #simulated_annealing = SimulatedAnnealing(runner,runner.dfs)
+    #simulated_annealing = SimulatedAnnealing(runner,runner.a_star,runner.get_euclid_dist)
+    simulated_annealing = SimulatedAnnealing(runner,runner.dfs)
     pass
     
     
