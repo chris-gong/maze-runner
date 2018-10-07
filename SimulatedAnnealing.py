@@ -1,4 +1,4 @@
-from random import randint
+from random import randint,getrandbits
 from copy import deepcopy
 from MazeRunner import MazeRunner
 from math import exp
@@ -67,22 +67,41 @@ class SimulatedAnnealing():
         neighbors = []
         dim = self.runner.dim
         while(True):
-            row_index = randint(0,dim-1) 
-            for x1 in range(0,dim):
-                if maze.grid[row_index][x1]:
-                    for x2 in range(0,dim):
-                        if maze.grid[row_index][x2]:
-                            continue
-                        else:
-                            if((row_index == 0 and x2 == 0) or
-                                (row_index == dim-1 and x2 == dim-1)):
+            row_bool = bool(getrandbits(1))
+            if(row_bool):
+                row_index = randint(0,dim-1) 
+                for x1 in range(0,dim):
+                    if maze.grid[row_index][x1]:
+                        for x2 in range(0,dim):
+                            if maze.grid[row_index][x2]:
                                 continue
-                            new_maze = deepcopy(maze)
-                            new_maze.grid[row_index][x2] = True
-                            new_maze.grid[row_index][x1] = False
-                            neighbors.append(new_maze)
-            if neighbors is not []:
-                return neighbors
+                            else:
+                                if((row_index == 0 and x2 == 0) or
+                                    (row_index == dim-1 and x2 == dim-1)):
+                                    continue
+                                new_maze = deepcopy(maze)
+                                new_maze.grid[row_index][x2] = True
+                                new_maze.grid[row_index][x1] = False
+                                neighbors.append(new_maze)
+                if neighbors is not []:
+                    return neighbors
+            else:
+                col_index = randint(0,dim-1) 
+                for x1 in range(0,dim):
+                    if maze.grid[x1][col_index]:
+                        for x2 in range(0,dim):
+                            if maze.grid[x2][col_index]:
+                                continue
+                            else:
+                                if((col_index == 0 and x2 == 0) or
+                                    (col_index == dim-1 and x2 == dim-1)):
+                                    continue
+                                new_maze = deepcopy(maze)
+                                new_maze.grid[x2][col_index] = True
+                                new_maze.grid[x1][col_index] = False
+                                neighbors.append(new_maze)
+                if neighbors is not []:
+                    return neighbors
     
     
     def generate_harder_maze(self,prop,search_function,*args):
@@ -123,21 +142,26 @@ class SimulatedAnnealing():
                 if prop_cmp(best_neighbor_state,self.current_state) > 0:
                     self.set_current_state(best_neighbor_state)
                 else:
-                    temp_check = self.temperature(prop_cmp(best_neighbor_state,
+                    temp_check = self.temperature(-prop_cmp(best_neighbor_state,
                                                            self.current_state),
                                                            0.48, 2)
+                    print(prop_cmp(best_neighbor_state, self.current_state))
                     if temp_check:
                         self.set_current_state(best_neighbor_state)
                     else:
                         return
         return
 if __name__ == '__main__':
-    runner = MazeRunner(25,.3)
+    runner = MazeRunner(30,.3)
     #simulated_annealing = SimulatedAnnealing(runner,runner.a_star,runner.get_euclid_dist)
     simulated_annealing = SimulatedAnnealing(runner)
     simulated_annealing.generate_harder_maze(
-            "solution_length",
-            runner.dfs)
+            "nodes_expanded",
+            runner.a_star,runner.get_manhatten_dist)
     print (str(simulated_annealing.original_state))
     print (str(simulated_annealing.current_state))
+    simulated_annealing.original_maze.render_maze()
+    runner.render_solution(simulated_annealing.original_state.solution)
+    simulated_annealing.current_state.maze.render_maze()
+    runner.render_solution(simulated_annealing.current_state.solution)
     
