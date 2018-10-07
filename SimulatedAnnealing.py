@@ -22,11 +22,11 @@ class SimulatedAnnealing():
         self.current_state = (self.original_maze,nodes_expanded)
         return True
         
-    def TemperatureFunction(self):
+    def temperature_schedule(self):
         pass
 
     
-    def GenerateNeighbors(self,maze):
+    def generate_neighbors(self,maze):
         neighbors = []
         dim = self.runner.dim
         row_index = randint(0,dim-1)
