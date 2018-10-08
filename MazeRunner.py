@@ -6,19 +6,19 @@ import matplotlib.pyplot as plt
 
 
 class MazeRunner():
-    def __init__(self, dim,prob):
+    def __init__(self, dim, prob):
         self.dim = dim
         self.prob = prob
         self.generate_maze()
 
-    def generate_maze(self): 
+    def generate_maze(self):
         self.maze = Maze(self.dim, self.prob)
 
     def get_euclid_dist(self, loc):
         return self.maze.euclid_dist(loc)
 
     def get_manhatten_dist(self, loc):
-        return self.maze.manhatten_dist(loc)
+                            return self.maze.manhatten_dist(loc)
 
     def is_in_maze(self, loc):
         x = loc[0]
@@ -53,7 +53,7 @@ class MazeRunner():
         nodes_expanded = 0
         max_fringe_size = 0
         while not fringe.is_empty():
-            max_fringe_size = max(max_fringe_size,len(fringe.stack))
+            max_fringe_size = max(max_fringe_size, len(fringe.stack))
             cur_loc = fringe.pop()
             nodes_expanded += 1
             if cur_loc == goal:
@@ -72,7 +72,8 @@ class MazeRunner():
             # closed.append(cur_loc)
         if not path_found:
             return None, nodes_expanded, max_fringe_size
-        return self.get_solution_from_paths(path, goal),nodes_expanded, max_fringe_size
+        return (self.get_solution_from_paths(path, goal),
+                nodes_expanded, max_fringe_size)
 
     def bfs(self):
         size = self.maze.dim
@@ -87,7 +88,7 @@ class MazeRunner():
         nodes_expanded = 0
         max_fringe_size = 0
         while not fringe.is_empty():
-            max_fringe_size = max(max_fringe_size,len(fringe.queue))
+            max_fringe_size = max(max_fringe_size, len(fringe.queue))
             cur_loc = fringe.dequeue()
             nodes_expanded += 1
             if cur_loc == goal:
@@ -105,8 +106,9 @@ class MazeRunner():
                     closed[new_loc[0]][new_loc[1]] = True
             # closed.append(cur_loc)
         if not path_found:
-            return None, nodes_expanded,max_fringe_size
-        return self.get_solution_from_paths(path, goal), nodes_expanded,max_fringe_size
+            return None, nodes_expanded, max_fringe_size
+        return (self.get_solution_from_paths(path, goal),
+                nodes_expanded, max_fringe_size)
 
     def a_star(self, heuristic):
         size = self.maze.dim
@@ -122,7 +124,7 @@ class MazeRunner():
         nodes_expanded = 0
         max_fringe_size = 0
         while not fringe.is_empty():
-            max_fringe_size = max(max_fringe_size,len(fringe.heap))
+            max_fringe_size = max(max_fringe_size, len(fringe.heap))
             cur_node = fringe.get_min_node()
             nodes_expanded += 1
             if cur_node is None:
@@ -150,8 +152,9 @@ class MazeRunner():
                             fringe.update_node(new_node)
             closed[cur_node.loc[0]][cur_node.loc[1]] = True
         if not path_found:
-            return None, nodes_expanded,max_fringe_size
-        return self.get_solution_from_paths(path, goal),nodes_expanded,max_fringe_size
+            return None, nodes_expanded, max_fringe_size
+        return (self.get_solution_from_paths(path, goal),
+                nodes_expanded, max_fringe_size)
 
     def render_solution(self, solution):
         solution_map = np.zeros((self.maze.dim, self.maze.dim), dtype=bool)
@@ -159,28 +162,26 @@ class MazeRunner():
             solution_map[loc[0]][loc[1]] = True
         plt.imshow(solution_map, cmap='Greys',  interpolation='nearest')
         plt.show()
-        
-        
+
     def run_tests(self, n_trials, search_function, *args):
         successes = 0
         total_length = 0
         for trial in range(n_trials):
             self.generate_maze()
-            solution,nodes_expanded, max_fringe_size = search_function(*args)
+            solution, nodes_expanded, max_fringe_size = search_function(*args)
             if solution is not None:
                 successes += 1
                 total_length += len(solution)
-                #self.render_solution(solution)
         avg_length = 0
         if successes > 0:
             avg_length = total_length / successes
         return successes, avg_length
 
 
-
 if __name__ == '__main__':
-    runner = MazeRunner(25,.3)
-    successes, avg_length = runner.run_tests(100,runner.a_star,runner.get_euclid_dist)
-    successes, avg_length = runner.run_tests(100,runner.a_star,runner.get_manhatten_dist)
-    print (successes)
-    
+    runner = MazeRunner(25, .3)
+    successes, avg_length = runner.run_tests(100, runner.a_star,
+                                             runner.get_euclid_dist)
+    successes, avg_length = runner.run_tests(100, runner.a_star,
+                                             runner.get_manhatten_dist)
+    print(successes)
