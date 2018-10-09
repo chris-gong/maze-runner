@@ -160,15 +160,17 @@ class SimulatedAnnealing():
 
 if __name__ == '__main__':
     runner = MazeRunner(30, .3)
-    # simulated_annealing = SimulatedAnnealing(runner,runner.a_star,
-    #                                          runner.get_euclid_dist)
+
     simulated_annealing = SimulatedAnnealing(runner)
     simulated_annealing.generate_harder_maze(
-            "nodes_expanded",
-            runner.a_star, runner.get_manhatten_dist)
+            "nodes_expanded", #which metric you want to make "harder"
+            runner.a_star, runner.get_manhatten_dist) #search algorithm used
+    
+    #print out both solutions' length, node's expanded, and max fringe size
     print(str(simulated_annealing.original_state))
     print(str(simulated_annealing.current_state))
-    simulated_annealing.original_maze.render_maze()
-    runner.render_solution(simulated_annealing.original_state.solution)
-    simulated_annealing.current_state.maze.render_maze()
-    runner.render_solution(simulated_annealing.current_state.solution)
+    
+    simulated_annealing.original_maze.render_maze() #show the original maze
+    runner.render_solution(simulated_annealing.original_state.solution) #show the original solution
+    simulated_annealing.current_state.maze.render_maze() #show the harder maze
+    runner.render_solution(simulated_annealing.current_state.solution) #show the new solution
