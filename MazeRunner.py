@@ -164,23 +164,40 @@ class MazeRunner():
     def run_tests(self, n_trials, search_function, *args):
         successes = 0
         total_length = 0
+        total_expanded = 0
         for trial in range(n_trials):
             self.generate_maze()
             solution,nodes_expanded, max_fringe_size = search_function(*args)
             if solution is not None:
                 successes += 1
                 total_length += len(solution)
+                total_expanded += nodes_expanded
                 #self.render_solution(solution)
         avg_length = 0
+        avg_expanded = 0
         if successes > 0:
             avg_length = total_length / successes
-        return successes, avg_length
-
-
+            avg_expanded = total_expanded / successes
+        return successes, avg_length, avg_expanded
 
 if __name__ == '__main__':
-    runner = MazeRunner(25,.3)
-    successes, avg_length = runner.run_tests(100,runner.a_star,runner.get_euclid_dist)
-    successes, avg_length = runner.run_tests(100,runner.a_star,runner.get_manhatten_dist)
-    print (successes)
+    runner = MazeRunner(30,.4) #create a maze of size 30x30 with a p value = 0.4
+    runner.maze.render_maze(); #show the maze
+
+    #show the solutions based on each algoirthm
+    runner.render_solution(runner.dfs()[0])
+    runner.render_solution(runner.bfs()[0])
+    runner.render_solution(runner.a_star(runner.get_euclid_dist)[0])
+    runner.render_solution(runner.a_star(runner.get_manhatten_dist)[0])
+
+    #showing the number of successes, avg length of the paths, and avg # of nodes expanded in 100 randomly generated mazes
+    successes, avg_length, avg_expanded = runner.run_tests(100,runner.dfs) #run_tests takes in number of mazes to be generated, algorithm, and parameters for algo(like heuristic)
+    print ('DFS',  successes, avg_length, avg_expanded)
+    successes, avg_length, avg_expanded = runner.run_tests(100,runner.bfs)
+    print ('BFS', successes, avg_length, avg_expanded)
+    successes, avg_length, avg_expanded = runner.run_tests(100,runner.a_star, runner.get_euclid_dist)
+    print ('A star euclidean',  successes, avg_length, avg_expanded)
+    successes, avg_length, avg_expanded = runner.run_tests(100,runner.a_star, runner.get_manhatten_dist)
+    print ('A star manhatten', successes, avg_length, avg_expanded)
+
     
